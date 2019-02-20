@@ -1,0 +1,87 @@
+
+- name: install RPM-GPG-KEY-CentOS-6
+  rpm_key:
+    state: present
+    key: http://mirror.centos.org/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+
+- name: Temporarily remove Duo repo
+  file:
+    state: absent
+    path: "/etc/yum.repos.d/duosecurity.repo"
+
+- name: Force install the CentOS RPMs we downloaded
+  shell: rpm -Uvh --force *.rpm
+  args:
+    chdir: /temp/centos/
+  ignore_errors: True
+
+- name: Clean up yum one more time and then upgrade
+  shell: yum clean all
+
+- name: Add EPEL repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    enabled: yes
+    gpgcheck: no
+
+- name:  Update cache
+  yum:
+    update_cache: yes
+
+- name: Install EPEL Release
+  yum:
+    name: epel-release
+    state: latest
+    
+- name: update all packages
+  yum:
+    name: '*'
+    state: latest
+    exclude: kernel*,network*
+
+- name:  Install rvlx standard packges
+  yum:
+    name: "{{ packages }}"
+    state: installed
+    update_cache: yes
+  vars:
+    packages:
+    - adcli
+    - authconfig
+    - sssd
+    - mailx
+    - arpwatch
+    - lynis
+    - audit
+    - rsyslog
+    - net-snmp
+    - net-snmp-utils
+
+- name:  Install Antivirus packages
+  yum:
+    name: "{{ packages }}"
+    state: installed
+    update_cache: yes
+  vars:
+    packages:
+    - clamav
+    - clamav-data
+    - clamav-devel
+    - clamav-lib
+    - clamav-update
+    - clamav-filesystem
+    - clamav-unofficial-sigs
+
+- name:  Update BUGFIXES
+  yum:
+    bugfix: yes
+    state: latest
+    update_cache: yes
+
+- name:  Update SECURITY
+  yum:
+    security: yes
+    state: latest
+    update_cache: yes

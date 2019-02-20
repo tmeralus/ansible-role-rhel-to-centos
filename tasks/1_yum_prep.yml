@@ -1,0 +1,7 @@
+- name: Clean up yum’s cache
+  shell: yum clean all
+
+- name: Creates temp directory
+  file:
+    path: /temp/centos
+    state: directory
