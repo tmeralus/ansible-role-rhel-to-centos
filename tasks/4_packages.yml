@@ -49,40 +49,23 @@
     exclude: kernel*,network*
   become: true
 
-- name:  Install rvlx standard packges
-  yum:
-    name: "{{ packages }}"
-    state: installed
-    update_cache: yes
-  vars:
-    packages:
-    - adcli
-    - authconfig
-    - sssd
-    - mailx
-    - arpwatch
-    - lynis
-    - audit
-    - rsyslog
-    - net-snmp
-    - net-snmp-utils
-  become: true
+- name: (PKG) Install standard packges Part 1 Auth
+  package:
+    name: ['postfix', 'pexpect', 'yum-utils', 'ntpdate', 'chrony', 'htop', 'policycoreutils-python', 'net-snmp', 'net-snmp-utils']
+    state: present
+#    update_cache: yes
+    #  when: ansible_distribution == 'CentOS'
 
-- name:  Install Antivirus packages
-  yum:
-    name: "{{ packages }}"
-    state: installed
-    update_cache: yes
-  vars:
-    packages:
-    - clamav
-    - clamav-data
-    - clamav-devel
-    - clamav-lib
-    - clamav-update
-    - clamav-filesystem
-    - clamav-unofficial-sigs
-  become: true
+- name: (PKG) Install standard packges Part 2 LIbs
+  package:
+    name: ['samba-common', 'samba-common-tools', 'spice-glib-devel', 'chrony', 'polkit-devel', 'libselinux', 'libselinux-utils', 'net-snmp', 'rsyslog', 'rsyslog-snmp', 'audit', 'audit-libs',]
+    state: present
+   #  when: ansible_distribution == 'CentOS'
+
+- name: (PKG) Install python specific packges
+  package:
+    name: ['python-pip', 'python2-pyvmomi', 'policycoreutils-python', 'python-pycurl', 'python-setuptools', 'python-pycurl',]
+    state: present
 
 - name:  Update BUGFIXES
   yum:
