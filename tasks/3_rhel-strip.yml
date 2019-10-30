@@ -9,6 +9,7 @@
     - redhat-release-notes*
     - redhat-release-server-6Server
     - redhat-indexhtml
+  become: true
 
 #- debug:
 #    msg: "If the ‘rpm -e’ command fails saying one of the packages is not installed remove the package from the command and run it again."
@@ -27,3 +28,4 @@
   yum:
     name: subscription-manager
     state: absent
+  become: true
