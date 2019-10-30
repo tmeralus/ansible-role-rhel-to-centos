@@ -10,3 +10,8 @@
     state: latest
     exclude: kernel*,foo*
   become: true
+
+- name: print to stdout
+  command: "uname -a "
+  register: sysname
+- debug: msg="{{ sysname.stdout }}"

@@ -1,9 +1,3 @@
-- name: Copy upgradetool repo
-  template:
-    src: "upgradetool.repo"
-    dest: "/etc/yum.repos.d/upgradetool.repo"
-  become: true
-
 - name: install RPM-GPG-KEY-CentOS-6
   rpm_key:
     state: present
@@ -41,34 +35,30 @@
     update_cache: yes
   become: true
 
-- name: Install EPEL Release
-  yum:
-    name: epel-release
-    state: latest
-  become: true
+#- name: Install EPEL Release
+#  yum:
+#    name: epel-release
+#    state: latest
+#  become: true
 
-- name: update all packages
-  yum:
-    name: '*'
-    state: latest
-    exclude: kernel*,network*
-  become: true
+#- name: update all packages
+#  yum:
+#    name: '*'
+#    state: latest
+#    exclude: kernel*,network*
+#  become: true
 
-- name: (PKG) Install rvlx standard packges Part 1 Auth
+- name: (PKG) Install standard system packges
   package:
-    name: ['postfix', 'pexpect', 'yum-utils', 'ntpdate', 'chrony', 'htop', 'policycoreutils-python', 'net-snmp', 'net-snmp-utils']
+    name: ['postfix', 'pexpect', 'yum-utils', 'rsyslog','samba-common', 'ntpdate', 'chrony', 'htop', 'net-snmp', 'net-snmp-utils']
     state: present
-
-- name: (PKG) Install standard packges Part 2 LIbs
-  package:
-    name: ['samba-common', 'samba-common-tools', 'spice-glib-devel', 'chrony', 'polkit-devel', 'libselinux', 'libselinux-utils', 'net-snmp', 'rsyslog', 'rsyslog-snmp', 'audit', 'audit-libs',]
-    state: present
-   #  when: ansible_distribution == 'CentOS'
+  become: true
 
 - name: (PKG) Install python specific packges
   package:
-    name: ['python-pip', 'python2-pyvmomi', 'policycoreutils-python', 'python-pycurl', 'python-setuptools', 'python-pycurl',]
+    name: ['python-pip', 'policycoreutils-python', 'python-pycurl', 'python-setuptools', 'python-pycurl',]
     state: present
+  become: true
 
 - name:  Update BUGFIXES
   yum:
